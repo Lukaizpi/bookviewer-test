@@ -26,7 +26,7 @@ export class BookViewer {
         let bil = document.getElementById('bilatu')
         bil.onclick = () => {
             let isbn = document.getElementById('isbn')
-            fetch(this.search_base+isbn).then(r=>r.json()).then(this.handleSearchData)
+            fetch(this.search_base+isbn.value).then(r=>r.json()).then(this.handleSearchData)
         } 
         atz.onclick = () =>{
             this.prevBook()
@@ -39,21 +39,21 @@ export class BookViewer {
 
     extractBookData = (book) => {
         // json objektu egoki bat bueltatu, zure webgunean erabili ahal izateko
-        let liburuOndo= {'isbn': book.isbn[0], 'egilea': book.author_name[0], 'data': book.publish_date[0], 'izenburua': book.title, 'filename': book.cover_i+'-M.jpg'}
+        let liburuOndo= {'isbn': book.isbn[0], 'egilea': book.author_name[0], 'data': book.publish_date[0], 'izenburua': book.title, 'filename': book.cover_i +'-M.jpg'}
         return liburuOndo;
       };
       
     addBookToData = (book, data) => {
         // data array-ean sartu liburua, eta liburu berriaren posizioa bueltatu
-        data.push(book);
-        return data.length;
+        this.data.push(book);
+        return data.length-1;
     };
 
     handleSearchData = (data) => {
         // lortu liburua data objektutik
         // extractBookData eta addBookToData funtzioak erabili, indizea berria lortuz
         // updateView funtzioa erabili, liburu berria bistaratzeko
-        let liburu = data.docs
+        let liburu = data.docs[0]
         let liburuOndo = this.extractBookData(liburu)
         this.index= this.addBookToData(liburuOndo, this.data)
         this.updateView()
@@ -67,15 +67,17 @@ export class BookViewer {
         this.izenburua.value=this.data[this.index].izenburua
         this.egilea.value=this.data[this.index].egilea
         this.isbn.value=this.data[this.index].isbn
-        this.data.value=this.data[this.index].data
-        this.irudia.scr=this.base+this.data[this.index].filename
+        this.dataElem.value=this.data[this.index].data
+        this.irudia.src=this.base+this.data[this.index].filename
+        this.liburuKopuru.innerText=this.data.length
+        console.log(this.index)
 
     }
 
     nextBook() {
         // Hurrengo indizea lortu eta updateView funtzioa erabili bistaratzeko
         // ez ezazu liburu kopurua gainditu
-        if(this.index=this.data.length-1){
+        if(this.index==this.data.length-1){
             console.log('Ez dago gehiagorik')
         }else{
             this.index=this.index+1
@@ -86,7 +88,7 @@ export class BookViewer {
     prevBook() {
         // Aurreko indizea lortu eta updateView funtzioa erabili bistaratzeko
         // ez ezazu 0 indizea gainditu
-        if(this.index=0){
+        if(this.index==0){
             console.log('Ez dago gehiagorik')
         }else{
             this.index=this.index-1
