@@ -39,7 +39,12 @@ export class BookViewer {
 
     extractBookData = (book) => {
         // json objektu egoki bat bueltatu, zure webgunean erabili ahal izateko
-        let liburuOndo= {'isbn': book.isbn[0], 'egilea': book.author_name[0], 'data': book.publish_date[0], 'izenburua': book.title, 'filename': book.cover_i +'-M.jpg'}
+        let liburuOndo= {
+            'isbn': book.isbn ? book.isbn[0]: 'N/A', 
+            'egilea': book.author_name ? book.author_name[0]: 'Egilea ez da aurkitu', 
+            'data': book.publish_date ? book.publish_date[0]: 'Data ez da aurkitu', 
+            'izenburua': book.title || 'Izenburua ez da aurkitu', 
+            'filename': book.cover_i ? book.cover_i +'-M.jpg': 'default.jpg'}
         return liburuOndo;
       };
       
