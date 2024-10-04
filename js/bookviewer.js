@@ -28,19 +28,25 @@ export class BookViewer {
             let isbn = document.getElementById('isbn')
             fetch(this.search_base+isbn).then(r=>r.json()).then(this.handleSearchData)
         } 
+        atz.onclick = () =>{
+            this.prevBook()
+        }
+        aur.onclick = () =>{
+            this.nextBook()
+        }
         
     }
 
     extractBookData = (book) => {
         // json objektu egoki bat bueltatu, zure webgunean erabili ahal izateko
-        let liburuOndo= {'isbn': book.isbn[0], 'egilea': book.author_name[0], 'data': book.publish_date[0], 'izenburua': book.title, 'filename': }
-        return null;
+        let liburuOndo= {'isbn': book.isbn[0], 'egilea': book.author_name[0], 'data': book.publish_date[0], 'izenburua': book.title, 'filename': book.cover_i+'-M.jpg'}
+        return liburuOndo;
       };
       
     addBookToData = (book, data) => {
         // data array-ean sartu liburua, eta liburu berriaren posizioa bueltatu
         data.push(book);
-        return data.length();
+        return data.length;
     };
 
     handleSearchData = (data) => {
@@ -49,7 +55,8 @@ export class BookViewer {
         // updateView funtzioa erabili, liburu berria bistaratzeko
         let liburu = data.docs
         let liburuOndo = this.extractBookData(liburu)
-        let indizeBerria= this.addBookToData(liburuOndo, this.data)
+        this.index= this.addBookToData(liburuOndo, this.data)
+        this.updateView()
 
 
     };
@@ -57,16 +64,34 @@ export class BookViewer {
     updateView() {
         // liburuaren datu guztiak bistaratu
         // liburu kopurua bistaratu
+        this.izenburua.value=this.data[this.index].izenburua
+        this.egilea.value=this.data[this.index].egilea
+        this.isbn.value=this.data[this.index].isbn
+        this.data.value=this.data[this.index].data
+        this.irudia.scr=this.base+this.data[this.index].filename
 
     }
 
     nextBook() {
         // Hurrengo indizea lortu eta updateView funtzioa erabili bistaratzeko
         // ez ezazu liburu kopurua gainditu
+        if(this.index=this.data.length-1){
+            console.log('Ez dago gehiagorik')
+        }else{
+            this.index=this.index+1
+        }
+        this.updateView()
     }
 
     prevBook() {
         // Aurreko indizea lortu eta updateView funtzioa erabili bistaratzeko
         // ez ezazu 0 indizea gainditu
+        if(this.index=0){
+            console.log('Ez dago gehiagorik')
+        }else{
+            this.index=this.index-1
+            this.updateView()
+        }
+        
     }
 }
